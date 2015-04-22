@@ -1,0 +1,52 @@
+html, body {
+	height: 100%;
+}
+
+.container {
+	display: flex;
+	flex-flow: row wrap;
+	height: 90%;
+}
+
+.search, .map-canvas, .places {
+	flex: 1 100%;
+}
+
+.search {
+	height: 30px;
+}
+
+.map-canvas {
+	height: 80%;
+}
+
+.places {
+	height: 20%;
+}
+
+.places {
+		-webkit-column-width: 200px;
+		-moz-column-width: 200px;
+		-ms-column-width: 200px;
+		column-width: 200px;
+	}
+
+	.search {background-color: red;}
+	.map-canvas {background-color: green;}
+	.places {background-color: blue;}
+
+/* Landscape or large screens */
+@media (orientation: landscape) and (max-device-width: 600px), (min-width: 1000px) {
+	/* move list to left side */
+	.places {
+		flex: 1 auto;
+		order: 1;
+		max-width: 210px;
+		height: 100%;
+	}
+	.map-canvas {
+		flex: 8 auto;
+		order: 2;
+		height: 100%;
+	}
+}

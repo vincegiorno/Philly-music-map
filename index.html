@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Philly music map</title>
+  <link href="css/main.css" rel="stylesheet">
+  <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhBc9dvua-NxInzFPtTZw3bKQdHrfxrU8">
+    </script>
+</head>
+
+<body>
+  <div class="search">
+
+  </div>
+  <div class="container">
+    <div class="map-canvas">
+<p>map</p>
+    </div>
+    <div class="places">
+			<p>Ardmore Music Hall</p>
+			<p>Wells Fargo Center</p>
+			<p>place 3</p>
+			<p>place 4</p>
+			<p>place 5</p>
+    </div>
+  </div>
+</body>
+
+</html>
+<script>
+var mapOptions = {
+    zoom: 12,
+    center: new google.maps.LatLng(39.9749224,-75.2391609),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+};
+
+var map = new google.maps.Map(document.getElementsByClassName("map-canvas")[0], mapOptions);
+
+// this is our gem
+google.maps.event.addDomListener(window, "resize", function() {
+    var center = map.getCenter();
+    google.maps.event.trigger(map, "resize");
+    map.setCenter(center);
+});
+</script>
