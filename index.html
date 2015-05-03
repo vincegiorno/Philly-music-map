@@ -5,34 +5,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Philly music map</title>
-  <link href="css/style.css" rel="stylesheet">
   <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhBc9dvua-NxInzFPtTZw3bKQdHrfxrU8">
-    </script>
-    <script src="resources/test-data.js"></script> <!-- contains data array in var venues -->
-    <script src="js/main.js"></script>
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhBc9dvua-NxInzFPtTZw3bKQdHrfxrU8">
+  </script>
+  <script type="text/javascript" src="js/knockout-3.3.0.js"></script>
+  <script type="text/javascript" src="resources/test-data.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body onload="initialize()">
   <div class="search">
 
   </div>
   <div class="container">
     <div class="map-canvas">
-<p>map</p>
+      <p>map</p>
     </div>
     <div class="places">
-			<p>Ardmore Music Hall</p>
-			<p>Wells Fargo Center</p>
-			<p>place 3</p>
-			<p>place 4</p>
-			<p>place 5</p>
-    </div>
-  </div>
+     <p>someplace</p>
+     <p>Wells Fargo Center</p>
+     <p>place 3</p>
+     <p>place 4</p>
+     <p>place 5</p>
+   </div>
+ </div>
 </body>
 
 </html>
-<script>
-mapView();
-data.getEvents();
-</script>

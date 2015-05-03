@@ -1,4 +1,4 @@
-var data = [
+var appStorage = [
 {
 "name": "Theatre of Living Arts (TLA)",
 "id": 1000,

@@ -1,5 +1,5 @@
-var mapView = function() {
 
+var mapView = function() {
   var mapOptions = {
     zoom: 12,
     center: new google.maps.LatLng(39.9749224, -75.2391609),
@@ -13,108 +13,112 @@ var mapView = function() {
     google.maps.event.trigger(map, "resize");
     map.setCenter(center);
   });
+  return map;
 };
 
-var image = "resources/music_live.png";
+var data = {};
+/* The list of venues is being read from a file for now, but alternately could come from
+local storage or an API call, when preprocessing would be needed, so data.venuelist is
+more of a place saver for now */
+data.venueList = appStorage;
+data.image = "resources/music_live.png";
 
-/* Each venue object contains stored data and a marker as its properties */
+var view = {};
+view.openEventsWindow = function() {
 
+};
 
 var vm = {};
+vm.searchStr = ko.observable("something");
 
-vm.searchStr = ko.observable("");
 
-vm.Venue = function(index) {
-    self = this;
-    self.id = data[index].id;
-    self.events = ko.observableArray();
-    vm.loadEvents(self.id);
-    self.name = data[index].name;
-    self.address = data[index].address;
-    self.marker = new google.maps.Marker({
-      position: {
-        lat: data[index].latitude,
-        lng: data[index].longitude
-      },
-      title: self.name,
-      icon: data.image,
-      animation: null,
-      map: null
-    });
-    google.maps.event.addListener(self.marker, 'click', view.openEventsWindow(self.events));
-    self.isVisible = ko.computed(function() {
-      if (self.name.indexOf(vm.searchStr) >= 0) {
+vm.Venue = function(place) {
+  this.id = place.id;
+  this.events = ko.observableArray();
+  this.name = place.name;
+  this.address = place.address;
+  this.marker = new google.maps.Marker({
+    position: {
+      lat: place.Latitude,
+      lng: place.Longitude
+    },
+    title: this.name,
+    icon: data.image,
+    animation: null,
+    map: vm.map
+  });
+  google.maps.event.addListener(this.marker, 'click', view.openEventsWindow(this.events));
+  this.isVisible = ko.computed(function() {
+    // Return true if a venue name, event date or artist name contains the search string
+    if ((this.events() === []) || (vm.searchStr === "")) {
+      return true;
+    }
+    var i;
+    if (this.name.indexOf(vm.searchStr) >= 0) {
+      return true;
+    }
+    for (i = this.events().length - 1; i >= 0; i--) {
+      if (this.events()[i].Date.indexOf(vm.searchStr) >= 0) {
         return true;
-      } else {
-        for (var i = self.events.length - 1; i >= 0; i--) {
-          if (self.events[i].date.indexOf(vm.searchStr) >= 0) {
-            return true;
-          }
-        }
-      } else {
-        for (i = self.events.length - 1; i >= 0; i--) {
-          for (var j = self.events[i].artists - 1; j >= 0; j--) {
-            if (self.events[i].artists[j].indexOf(vm.searchStr) >= 0) {
-              return true;
-            }
-          }
-        }
-      } else {
-        return false;
       }
-    });
-  };
+    }
+    for (i = this.events().length - 1; i >= 0; i--) {
+      for (var j = this.events()[i].Artists - 1; j >= 0; j--) {
+        if (this.events()[i].Artists[j].name.indexOf(vm.searchStr) >= 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }.bind(this));
+};
 
-    vm.venues = ko.observableArray();
+vm.Venue.prototype.loadEvents = function() {
+  if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+    httpRequest = new XMLHttpRequest();
+  } else if (window.ActiveXObject) { // IE
+    try {
+      httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (e) {
+      try {
+        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+      } catch (e) {}
+    }
+  }
+  if (!httpRequest) {
+    alert('Data could not be requested from the server.');
+    return false;
+  }
+  httpRequest.onreadystatechange = function() {
+    if (httpRequest.readyState === 4) {
+      if (httpRequest.status === 200) {
+        this.events(JSON.parse(httpRequest.responseText));
+      } else {
+        alert('There was a problem with the request.');
+      }
+    }
+  }.bind(this);
+  url = "http://api.jambase.com/events?venueId=" + this.id +
+    "&page=0&api_key=73ntgrhffzwqdcaan4empnrd";
+  httpRequest.open('GET', url);
+  httpRequest.send();
+};
 
-    /* Function populates venues with venue objects. it is set up to execute
-    twice a second because each */
-    vm.initialize = function() {
-      var i = data.length - 1;
-      venues[i] = new Venue(data[i]);
-      venues[i].visible = ko.observable(true);
-      vm.getEvents(i, data[i].id);
+vm.venues = ko.observableArray();
+
+/* Function populates venues with venue objects. it is set up to execute
+twice a second because each */
+var initialize = function() {
+  vm.map = mapView();
+  var i = data.venueList.length - 1;
+  vm.venues[i] = new vm.Venue(data.venueList[i]);
+  i -= 1;
+  while (i >= 0) {
+    setTimeout(function() {
+      vm.venues[i] = new vm.Venue(data.venueList[i]);
       i -= 1;
-      while (i >= 0) {
-        setTimeout(function() {
-          venues[i] = vm.createVenue(i);
-          i -= 1;
-        }, 500);
-      }
-    }
+    }, 500);
+  }
+  ko.applyBindings(vm);
+};
 
-    vm.getEvents = function(index, id) {
-      if (window.XMLHttpRequest) { // Mozilla, Safari, ...
-        httpRequest = new XMLHttpRequest();
-      } else if (window.ActiveXObject) { // IE
-        try {
-          httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-          try {
-            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-          } catch (e) {}
-        }
-      }
-
-      if (!httpRequest) {
-        alert('Data could not be requested from the server.');
-        return false;
-      }
-      httpRequest.onreadystatechange = processEvents(index);
-      url = "http://api.jambase.com/events?venueId=" + id +
-        "&page=0&api_key=73ntgrhffzwqdcaan4empnrd";
-      httpRequest.open('GET', url);
-      httpRequest.send();
-    };
-
-    function processEvents(index) {
-      if (httpRequest.readyState === 4) {
-        if (httpRequest.status === 200) {
-          venues[index].events(JSON.parse(httpRequest.responseText));
-        } else {
-          alert('There was a problem with the request.');
-        }
-      }
-    }
-
-    view.format(data.getEvents(self.id));
