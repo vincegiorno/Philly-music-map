@@ -1,5 +1,5 @@
-
 var mapView = function() {
+  console.log('mapView called');
   var mapOptions = {
     zoom: 12,
     center: new google.maps.LatLng(39.9749224, -75.2391609),
@@ -7,7 +7,7 @@ var mapView = function() {
   };
 
   var map = new google.maps.Map(document.getElementsByClassName("map-canvas")[0], mapOptions);
-
+  console.log('map created');
   google.maps.event.addDomListener(window, "resize", function() {
     var center = map.getCenter();
     google.maps.event.trigger(map, "resize");
@@ -48,7 +48,7 @@ vm.Venue = function(place) {
     map: vm.map
   });
   google.maps.event.addListener(this.marker, 'click', view.openEventsWindow(this.events));
-  this.isVisible = ko.computed(function() {
+  /*this.isVisible = ko.computed(function() {
     // Return true if a venue name, event date or artist name contains the search string
     if ((this.events() === []) || (vm.searchStr === "")) {
       return true;
@@ -70,7 +70,7 @@ vm.Venue = function(place) {
       }
     }
     return false;
-  }.bind(this));
+  }.bind(this));*/
 };
 
 vm.Venue.prototype.loadEvents = function() {
@@ -106,19 +106,20 @@ vm.Venue.prototype.loadEvents = function() {
 
 vm.venues = ko.observableArray();
 
+
 /* Function populates venues with venue objects. it is set up to execute
 twice a second because each */
 var initialize = function() {
+  console.log('started');
   vm.map = mapView();
   var i = data.venueList.length - 1;
+  console.log('creating Venue ' + i + '\n');
   vm.venues[i] = new vm.Venue(data.venueList[i]);
-  i -= 1;
-  while (i >= 0) {
+  for (i = i - 1; i >= 0; i--) {
     setTimeout(function() {
       vm.venues[i] = new vm.Venue(data.venueList[i]);
-      i -= 1;
     }, 500);
   }
-  ko.applyBindings(vm);
 };
 
+ko.applyBindings(vm);
