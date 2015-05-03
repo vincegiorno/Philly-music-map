@@ -33,7 +33,9 @@ vm.searchStr = ko.observable("something");
 
 
 vm.Venue = function(place) {
+  console.log(place);
   this.id = place.id;
+  console.log(place.id);
   this.events = ko.observableArray();
   this.name = place.name;
   this.address = place.address;
@@ -107,6 +109,7 @@ vm.Venue.prototype.loadEvents = function() {
 vm.venues = ko.observableArray();
 
 
+
 /* Function populates venues with venue objects. it is set up to execute
 twice a second because each */
 var initialize = function() {
@@ -115,11 +118,16 @@ var initialize = function() {
   var i = data.venueList.length - 1;
   console.log('creating Venue ' + i + '\n');
   vm.venues[i] = new vm.Venue(data.venueList[i]);
-  for (i = i - 1; i >= 0; i--) {
-    setTimeout(function() {
-      vm.venues[i] = new vm.Venue(data.venueList[i]);
-    }, 500);
-  }
-};
+  var timer = setInterval(function() {
+    i--;
+    console.log('creating Venue ' + i + '\n');
+    console.log('place' + data.venueList[i] + '\n');
+    vm.venues[i] = new vm.Venue(data.venueList[i]);
+    if (i === 0) {
+      clearInterval(timer);
+    }
 
-ko.applyBindings(vm);
+  }, 500);
+  ko.applyBindings(vm);
+
+};
