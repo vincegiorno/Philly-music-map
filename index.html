@@ -23,11 +23,9 @@
       <p>map</p>
     </div>
     <div class="places">
-     <p>someplace</p>
-     <p>Wells Fargo Center</p>
-     <p>place 3</p>
-     <p>place 4</p>
-     <p>place 5</p>
+     <ul data-bind = "foreach: venues">
+      <li data-bind = "text: name"></li>
+     </ul>
    </div>
  </div>
 </body>

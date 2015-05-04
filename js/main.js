@@ -2,7 +2,7 @@ var mapView = function() {
   console.log('mapView called');
   var mapOptions = {
     zoom: 12,
-    center: new google.maps.LatLng(39.9749224, -75.2391609),
+    center: new google.maps.LatLng(39.9518, -75.1845),
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
@@ -33,9 +33,7 @@ vm.searchStr = ko.observable("something");
 
 
 vm.Venue = function(place) {
-  console.log(place);
   this.id = place.id;
-  console.log(place.id);
   this.events = ko.observableArray();
   this.name = place.name;
   this.address = place.address;
@@ -116,18 +114,16 @@ var initialize = function() {
   console.log('started');
   vm.map = mapView();
   var i = data.venueList.length - 1;
-  console.log('creating Venue ' + i + '\n');
-  vm.venues[i] = new vm.Venue(data.venueList[i]);
+  vm.venues.push(new vm.Venue(data.venueList[i]));
   var timer = setInterval(function() {
     i--;
-    console.log('creating Venue ' + i + '\n');
-    console.log('place' + data.venueList[i] + '\n');
-    vm.venues[i] = new vm.Venue(data.venueList[i]);
+    vm.venues.push(new vm.Venue(data.venueList[i]));
     if (i === 0) {
       clearInterval(timer);
     }
 
   }, 500);
+  console.log(vm.venues());
   ko.applyBindings(vm);
 
 };

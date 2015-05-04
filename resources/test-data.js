@@ -14,11 +14,11 @@ var appStorage = [
 "Longitude": -75.164845
 },
 {
-"name": "Ardmore Music Hall",
-"id": 139974,
-"address": "23 E Lancaster Ave, Ardmore",
-"Latitude": 40.007595,
-"Longitude": -75.290002
+"name": "Wells Fargo Center",
+"id": 259,
+"address": "3601 S Broad St",
+"Latitude": 39.901171,
+"Longitude": -75.172633
 },
 {
 "name": "Lincoln Financial Field",
@@ -26,13 +26,6 @@ var appStorage = [
 "address": "1 Lincoln Financial Field Way",
 "Latitude": 39.90073,
 "Longitude": -75.16754
-},
-{
-"name": "Wells Fargo Center",
-"id": 259,
-"address": "3601 S Broad St",
-"Latitude": 39.947,
-"Longitude": -75.1648
 },
 {
 "name": "Tower Theater",
@@ -91,32 +84,11 @@ var appStorage = [
 "Longitude": -75.156323
 },
 {
-"name": "Keswick Theatre",
-"id": 6457,
-"address": "291 Keswick Ave, Glenside",
-"Latitude": 40.106318,
-"Longitude": -75.147469
-},
-{
 "name": "Susquehanna Bank Center",
 "id": 3242,
 "address": "1 Harbour Blvd, Camden",
 "Latitude": 39.94172,
 "Longitude": -75.12793
-},
-{
-"name": "Bryn Mawr Gazebo",
-"id": 105822,
-"address": "9 S Bryn Mawr Ave, Bryn Mawr",
-"Latitude": 40.02102,
-"Longitude": -75.31800
-},
-{
-"name": "Burlap and Bean",
-"id": 67615,
-"address": "204 S Newtown Street Rd, Newtown Square",
-"Latitude": 39.9781868,
-"Longitude": -75.3976719
 }
 ];
 
