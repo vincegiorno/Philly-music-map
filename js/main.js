@@ -73,6 +73,16 @@ vm.Venue = function(place) {
   }.bind(this));*/
 };
 
+vm.Venue.prototype.toggleBounce = function() {
+
+  if (this.marker.getAnimation() != null) {
+    this.marker.setAnimation(null);
+  } else {
+    this.marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+};
+
+
 vm.Venue.prototype.loadEvents = function() {
   if (window.XMLHttpRequest) { // Mozilla, Safari, ...
     httpRequest = new XMLHttpRequest();
