@@ -1,5 +1,4 @@
 var mapView = function() {
-  console.log('mapView called');
   var mapOptions = {
     zoom: 12,
     center: new google.maps.LatLng(39.9518, -75.1845),
@@ -7,7 +6,6 @@ var mapView = function() {
   };
 
   var map = new google.maps.Map(document.getElementsByClassName("map-canvas")[0], mapOptions);
-  console.log('map created');
   google.maps.event.addDomListener(window, "resize", function() {
     var center = map.getCenter();
     google.maps.event.trigger(map, "resize");
@@ -29,12 +27,13 @@ view.openEventsWindow = function() {
 };
 
 var vm = {};
-vm.searchStr = ko.observable("something");
+vm.searchStr = ko.observable("");
 
 
 vm.Venue = function(place) {
   this.id = place.id;
-  this.events = ko.observableArray();
+  this.events = ko.observableArray(testEvents);
+  console.log(this.events());
   this.name = place.name;
   this.address = place.address;
   this.marker = new google.maps.Marker({
@@ -48,29 +47,29 @@ vm.Venue = function(place) {
     map: vm.map
   });
   google.maps.event.addListener(this.marker, 'click', view.openEventsWindow(this.events));
-  /*this.isVisible = ko.computed(function() {
+  this.isVisible = ko.computed(function() {
     // Return true if a venue name, event date or artist name contains the search string
-    if ((this.events() === []) || (vm.searchStr === "")) {
+    if (vm.searchStr() === "") {
+      this.marker.setVisible(true);
       return true;
     }
     var i;
-    if (this.name.indexOf(vm.searchStr) >= 0) {
+    if (this.name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
+      this.marker.setVisible(true);
       return true;
     }
     for (i = this.events().length - 1; i >= 0; i--) {
-      if (this.events()[i].Date.indexOf(vm.searchStr) >= 0) {
-        return true;
-      }
-    }
-    for (i = this.events().length - 1; i >= 0; i--) {
-      for (var j = this.events()[i].Artists - 1; j >= 0; j--) {
-        if (this.events()[i].Artists[j].name.indexOf(vm.searchStr) >= 0) {
+      for (var j = this.events()[i].Artists.length - 1; j >= 0; j--) {
+        var compare = this.events()[i].Artists[j].Name.toLowerCase();
+        if (this.events()[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
+          this.marker.setVisible(true);
           return true;
         }
       }
     }
+    this.marker.setVisible(false);
     return false;
-  }.bind(this));*/
+  }.bind(this));
 };
 
 vm.Venue.prototype.toggleBounce = function() {
@@ -121,7 +120,6 @@ vm.venues = ko.observableArray();
 /* Function populates venues with venue objects. it is set up to execute
 twice a second because each */
 var initialize = function() {
-  console.log('started');
   vm.map = mapView();
   var i = data.venueList.length - 1;
   vm.venues.push(new vm.Venue(data.venueList[i]));
@@ -133,7 +131,6 @@ var initialize = function() {
     }
 
   }, 500);
-  console.log(vm.venues());
   ko.applyBindings(vm);
 
 };

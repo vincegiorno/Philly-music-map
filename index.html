@@ -16,7 +16,7 @@
 
 <body onload="initialize()">
   <div class="search">
-
+<p>Search for a venue, artist or date <input data-bind="textInput: searchStr" /></p>
   </div>
   <div class="container">
     <div class="map-canvas">
@@ -24,7 +24,7 @@
     </div>
     <div class="places">
      <ul data-bind = "foreach: venues">
-      <li data-bind = "text: name, event: {mouseover: toggleBounce, mouseout: toggleBounce}"></li>
+      <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleBounce, mouseout: toggleBounce}"></li>
      </ul>
    </div>
  </div>
