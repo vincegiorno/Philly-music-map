@@ -24,7 +24,7 @@
     </div>
     <div class="places">
      <ul data-bind = "foreach: venues">
-      <li data-bind = "text: name"></li>
+      <li data-bind = "text: name, event: {mouseover: toggleBounce, mouseout: toggleBounce}"></li>
      </ul>
    </div>
  </div>

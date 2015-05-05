@@ -75,7 +75,7 @@ vm.Venue = function(place) {
 
 vm.Venue.prototype.toggleBounce = function() {
 
-  if (this.marker.getAnimation() != null) {
+  if (this.marker.getAnimation() !== null) {
     this.marker.setAnimation(null);
   } else {
     this.marker.setAnimation(google.maps.Animation.BOUNCE);
