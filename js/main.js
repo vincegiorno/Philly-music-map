@@ -22,8 +22,10 @@ data.venueList = appStorage;
 data.image = "resources/music_live.png";
 
 var view = {};
-view.formatEvents = function(eventsObj) {
-  return eventsObj;
+view.formatEvents = function(name, eventsObj) {
+  var contentStr = "<div class='info'><h2>" + name + "</h2>";
+  contentStr += "</div>";
+  return contentStr;
 };
 
 var vm = {};
@@ -33,7 +35,6 @@ vm.searchStr = ko.observable("");
 vm.Venue = function(place) {
   this.id = place.id;
   this.events = ko.observableArray(testEvents);
-  this.windowContent = ko.observable("empty");
   this.name = place.name;
   this.address = place.address;
 
@@ -49,15 +50,16 @@ vm.Venue = function(place) {
   });
 
   this.infoWindow = new google.maps.InfoWindow({
-      content: this.windowContent()
+    content: ""
   });
+  this.contentFormatted = false;
 
   google.maps.event.addListener(this.marker, 'click', function() {
-    console.log(this.windowContent());
-        if (this.windowContent() == "empty") {
-          this.windowContent(view.formatEvents(this.events));
-        }
-        this.infoWindow.open(vm.map, this.marker);
+    if (!this.contentFormatted) {
+      this.infoWindow.setContent(view.formatEvents(this.name, this.events));
+      this.contentFormatted = true;
+    }
+    this.infoWindow.open(vm.map, this.marker);
   }.bind(this));
 
   this.isVisible = ko.computed(function() {
