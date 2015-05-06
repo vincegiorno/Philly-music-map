@@ -22,15 +22,70 @@ data.venueList = appStorage;
 data.image = "resources/music_live.png";
 
 var view = {};
-view.formatEvents = function(name, eventsObj) {
-  var contentStr = "<div class='info'><h2>" + name + "</h2>";
-  contentStr += "</div>";
+view.formatEvents = function(name, eventsArray) {
+  var contentStr = "<div class='info'><h3><a href='" + eventsArray[0].Venue.Url +
+    "' target='_blank'>" + name + "</a></h3>";
+  for (var i = 0; i < eventsArray.length; i++) {
+    contentStr += "<h4>" + view.formatDate(eventsArray[i].Date) + "</h4>";
+
+    for (var j = 0; j < eventsArray[i].Artists.length; j++) {
+      contentStr += "<p>" + eventsArray[i].Artists[j].Name + "</p>";
+    }
+    contentStr += "<a href='" + eventsArray[i].TicketUrl +
+      "' target='_blank'>Get ticket info</a>";
+    contentStr += "</div>";
+  }
   return contentStr;
+};
+
+view.formatDate = function(dateStr) {
+  var date = dateStr.substr(5, 5);
+  var month = parseInt(date.substr(0, 2));
+  switch (month) {
+    case 1:
+      month = "January";
+      break;
+    case 2:
+      month = "February";
+      break;
+    case 3:
+      month = "March";
+      break;
+    case 4:
+      month = "April";
+      break;
+    case 5:
+      month = "May";
+      break;
+    case 6:
+      month = "June";
+      break;
+    case 7:
+      month = "July";
+      break;
+    case 8:
+      month = "August";
+      break;
+    case 9:
+      month = "September";
+      break;
+    case 10:
+      month = "October";
+      break;
+    case 11:
+      month = "November";
+      break;
+    case 12:
+      month = "December";
+      break;
+    default:
+      month = null;
+  }
+  return month + " " + parseInt(date.substr(3, 2));
 };
 
 var vm = {};
 vm.searchStr = ko.observable("");
-
 
 vm.Venue = function(place) {
   this.id = place.id;
@@ -56,7 +111,7 @@ vm.Venue = function(place) {
 
   google.maps.event.addListener(this.marker, 'click', function() {
     if (!this.contentFormatted) {
-      this.infoWindow.setContent(view.formatEvents(this.name, this.events));
+      this.infoWindow.setContent(view.formatEvents(this.name, this.events()));
       this.contentFormatted = true;
     }
     this.infoWindow.open(vm.map, this.marker);
@@ -127,9 +182,10 @@ vm.Venue.prototype.loadEvents = function() {
   httpRequest.send();
 };
 
-
-/* Function populates venues with venue objects. it is set up to execute
-twice a second because each */
+/* Triggered after DOM is loaded to draw map and apply ko bindings,
+and to populate the venues array with venue objects. Each new object makes
+an API call to JamBase, which limits calls to 2 per second, so
+SetInterval is used to time this process. */
 var initialize = function() {
   vm.map = mapView();
   vm.venues = ko.observableArray();
@@ -144,5 +200,4 @@ var initialize = function() {
 
   }, 500);
   ko.applyBindings(vm);
-
 };
