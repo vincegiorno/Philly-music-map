@@ -22,8 +22,8 @@ data.venueList = appStorage;
 data.image = "resources/music_live.png";
 
 var view = {};
-view.openEventsWindow = function() {
-
+view.formatEvents = function(eventsObj) {
+  return eventsObj;
 };
 
 var vm = {};
@@ -33,9 +33,10 @@ vm.searchStr = ko.observable("");
 vm.Venue = function(place) {
   this.id = place.id;
   this.events = ko.observableArray(testEvents);
-  console.log(this.events());
+  this.windowContent = ko.observable("empty");
   this.name = place.name;
   this.address = place.address;
+
   this.marker = new google.maps.Marker({
     position: {
       lat: place.Latitude,
@@ -46,7 +47,19 @@ vm.Venue = function(place) {
     animation: null,
     map: vm.map
   });
-  google.maps.event.addListener(this.marker, 'click', view.openEventsWindow(this.events));
+
+  this.infoWindow = new google.maps.InfoWindow({
+      content: this.windowContent()
+  });
+
+  google.maps.event.addListener(this.marker, 'click', function() {
+    console.log(this.windowContent());
+        if (this.windowContent() == "empty") {
+          this.windowContent(view.formatEvents(this.events));
+        }
+        this.infoWindow.open(vm.map, this.marker);
+  }.bind(this));
+
   this.isVisible = ko.computed(function() {
     // Return true if a venue name, event date or artist name contains the search string
     if (vm.searchStr() === "") {
@@ -81,7 +94,6 @@ vm.Venue.prototype.toggleBounce = function() {
   }
 };
 
-
 vm.Venue.prototype.loadEvents = function() {
   if (window.XMLHttpRequest) { // Mozilla, Safari, ...
     httpRequest = new XMLHttpRequest();
@@ -113,14 +125,12 @@ vm.Venue.prototype.loadEvents = function() {
   httpRequest.send();
 };
 
-vm.venues = ko.observableArray();
-
-
 
 /* Function populates venues with venue objects. it is set up to execute
 twice a second because each */
 var initialize = function() {
   vm.map = mapView();
+  vm.venues = ko.observableArray();
   var i = data.venueList.length - 1;
   vm.venues.push(new vm.Venue(data.venueList[i]));
   var timer = setInterval(function() {
