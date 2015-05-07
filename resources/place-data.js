@@ -14,13 +14,6 @@ var appStorage = [
 "longitude": -75.164845
 },
 {
-"name": "Ardmore Music Hall",
-"id": 139974,
-"address": "23 E Lancaster Ave, Ardmore",
-"latitude": 40.007595,
-"longitude": -75.290002
-},
-{
 "name": "Lincoln Financial Field",
 "id": 3461,
 "address": "1 Lincoln Financial Field Way",
@@ -91,31 +84,10 @@ var appStorage = [
 "longitude": -75.156323
 },
 {
-"name": "Keswick Theatre",
-"id": 6457,
-"address": "291 Keswick Ave, Glenside",
-"latitude": 40.106318,
-"longitude": -75.147469
-},
-{
 "name": "Susquehanna Bank Center",
 "id": 3242,
 "address": "1 Harbour Blvd, Camden",
 "latitude": 39.94172,
 "longitude": -75.12793
-},
-{
-"name": "Bryn Mawr Gazebo",
-"id": 105822,
-"address": "9 S Bryn Mawr Ave, Bryn Mawr",
-"latitude": 40.02102,
-"longitude": -75.31800
-},
-{
-"name": "Burlap and Bean",
-"id": 67615,
-"address": "204 S Newtown Street Rd, Newtown Square",
-"latitude": 39.9781868,
-"longitude": -75.3976719
 }
 ];

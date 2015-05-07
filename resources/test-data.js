@@ -1,17 +1,24 @@
 var appStorage = [
 {
-"name": "Theatre of Living Arts (TLA)",
-"id": 1000,
-"address": "334 South St",
-"Latitude": 39.941515,
-"Longitude": -75.148335
+"name": "Mann Music Center",
+"id": 45991,
+"address": "5201 Parkside Ave",
+"Latitude": 39.98149,
+"Longitude": -75.2241
 },
 {
-"name": "Kimmel Center",
-"id": 16004,
-"address": "300 S Broad St",
-"Latitude": 39.946999,
-"Longitude": -75.164845
+"name": "Susquehanna Bank Center",
+"id": 3242,
+"address": "1 Harbour Blvd, Camden",
+"Latitude": 39.94172,
+"Longitude": -75.12793
+},
+{
+"name": "World Cafe Live",
+"id": 69812,
+"address": "3025 Walnut Street",
+"Latitude": 39.9518,
+"Longitude": -75.1845
 },
 {
 "name": "Wells Fargo Center",
@@ -26,6 +33,13 @@ var appStorage = [
 "address": "1 Lincoln Financial Field Way",
 "Latitude": 39.90073,
 "Longitude": -75.16754
+},
+{
+"name": "Kimmel Center",
+"id": 16004,
+"address": "300 S Broad St",
+"Latitude": 39.946999,
+"Longitude": -75.164845
 },
 {
 "name": "Tower Theater",
@@ -49,25 +63,18 @@ var appStorage = [
 "Longitude": -75.164579
 },
 {
-"name": "World Cafe Live",
-"id": 69812,
-"address": "3025 Walnut Street",
-"Latitude": 39.9518,
-"Longitude": -75.1845
-},
-{
-"name": "Mann Music Center",
-"id": 45991,
-"address": "5201 Parkside Ave",
-"Latitude": 39.98149,
-"Longitude": -75.2241
-},
-{
 "name": "Electric Factory",
 "id": 3542,
 "address": "421 N 7th St",
 "Latitude": 39.958868,
 "Longitude": -75.150212
+},
+{
+"name": "Theatre of Living Arts (TLA)",
+"id": 1000,
+"address": "334 South St",
+"Latitude": 39.941515,
+"Longitude": -75.148335
 },
 {
 "name": "Union Transfer",
@@ -82,13 +89,6 @@ var appStorage = [
 "address": "1003 Arch St",
 "Latitude": 39.95355,
 "Longitude": -75.156323
-},
-{
-"name": "Susquehanna Bank Center",
-"id": 3242,
-"address": "1 Harbour Blvd, Camden",
-"Latitude": 39.94172,
-"Longitude": -75.12793
 }
 ];
 

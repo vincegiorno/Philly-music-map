@@ -89,7 +89,9 @@ vm.searchStr = ko.observable("");
 
 vm.Venue = function(place) {
   this.id = place.id;
-  this.events = ko.observableArray(testEvents);
+  this.events = [];
+  this.eventsLoaded = ko.observable(false);
+  this.loadEvents();
   this.name = place.name;
   this.address = place.address;
 
@@ -101,7 +103,8 @@ vm.Venue = function(place) {
     title: this.name,
     icon: data.image,
     animation: null,
-    map: vm.map
+    map: vm.map,
+    visible: false
   });
 
   this.infoWindow = new google.maps.InfoWindow({
@@ -111,13 +114,16 @@ vm.Venue = function(place) {
 
   google.maps.event.addListener(this.marker, 'click', function() {
     if (!this.contentFormatted) {
-      this.infoWindow.setContent(view.formatEvents(this.name, this.events()));
+      this.infoWindow.setContent(view.formatEvents(this.name, this.events));
       this.contentFormatted = true;
     }
     this.infoWindow.open(vm.map, this.marker);
   }.bind(this));
 
   this.isVisible = ko.computed(function() {
+    if (!this.eventsLoaded()) {
+      return false;
+    }
     // Return true if a venue name, event date or artist name contains the search string
     if (vm.searchStr() === "") {
       this.marker.setVisible(true);
@@ -129,9 +135,9 @@ vm.Venue = function(place) {
       return true;
     }
     for (i = this.events().length - 1; i >= 0; i--) {
-      for (var j = this.events()[i].Artists.length - 1; j >= 0; j--) {
-        var compare = this.events()[i].Artists[j].Name.toLowerCase();
-        if (this.events()[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
+      for (var j = this.events[i].Artists.length - 1; j >= 0; j--) {
+        var compare = this.events[i].Artists[j].Name.toLowerCase();
+        if (this.events[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
           this.marker.setVisible(true);
           return true;
         }
@@ -168,9 +174,15 @@ vm.Venue.prototype.loadEvents = function() {
     return false;
   }
   httpRequest.onreadystatechange = function() {
+    if (httpRequest.readyState === 2) {
+      console.log("request sent for ", this.name);
+    }
     if (httpRequest.readyState === 4) {
       if (httpRequest.status === 200) {
-        this.events(JSON.parse(httpRequest.responseText));
+        this.events = JSON.parse(httpRequest.responseText).Events;
+        console.log(this.events);
+        console.log(this);
+        this.eventsLoaded(true);
       } else {
         alert('There was a problem with the request.');
       }
