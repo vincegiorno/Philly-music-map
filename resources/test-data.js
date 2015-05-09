@@ -33,7 +33,10 @@ var appStorage = [
 "address": "1 Lincoln Financial Field Way",
 "Latitude": 39.90073,
 "Longitude": -75.16754
-},
+}
+];
+
+var other = [
 {
 "name": "Kimmel Center",
 "id": 16004,

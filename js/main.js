@@ -19,7 +19,7 @@ var data = {};
 local storage or an API call, when preprocessing would be needed, so data.venuelist is
 more of a place saver for now */
 data.venueList = appStorage;
-data.image = "resources/music_live.png";
+data.image = "resources/music_marker.png";
 
 var view = {};
 view.formatEvents = function(name, eventsArray) {
@@ -86,12 +86,15 @@ view.formatDate = function(dateStr) {
 
 var vm = {};
 vm.searchStr = ko.observable("");
+vm.artistSearch = ko.observable(false);
 
 vm.Venue = function(place) {
   this.id = place.id;
   this.events = [];
   this.eventsLoaded = ko.observable(false);
   this.loadEvents();
+  //this.events = testEvents;
+  this.eventsLoaded = ko.observable(false);
   this.name = place.name;
   this.address = place.address;
 
@@ -129,17 +132,21 @@ vm.Venue = function(place) {
       this.marker.setVisible(true);
       return true;
     }
+
     var i;
-    if (this.name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
-      this.marker.setVisible(true);
-      return true;
-    }
-    for (i = this.events().length - 1; i >= 0; i--) {
-      for (var j = this.events[i].Artists.length - 1; j >= 0; j--) {
-        var compare = this.events[i].Artists[j].Name.toLowerCase();
-        if (this.events[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
-          this.marker.setVisible(true);
-          return true;
+    if (!vm.artistSearch()) {
+      if (this.name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
+        this.marker.setVisible(true);
+        return true;
+      }
+    } else {
+      for (i = this.events.length - 1; i >= 0; i--) {
+        for (var j = this.events[i].Artists.length - 1; j >= 0; j--) {
+          var compare = this.events[i].Artists[j].Name.toLowerCase();
+          if (this.events[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
+            this.marker.setVisible(true);
+            return true;
+          }
         }
       }
     }
@@ -148,7 +155,7 @@ vm.Venue = function(place) {
   }.bind(this));
 };
 
-vm.Venue.prototype.toggleBounce = function() {
+vm.Venue.prototype.toggleMarker = function() {
 
   if (this.marker.getAnimation() !== null) {
     this.marker.setAnimation(null);
@@ -210,6 +217,6 @@ var initialize = function() {
       clearInterval(timer);
     }
 
-  }, 500);
+  }, 550);
   ko.applyBindings(vm);
 };
