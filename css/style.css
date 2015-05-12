@@ -2,6 +2,10 @@ html, body {
 	height: 100%;
 }
 
+body {
+	background-color: #cadfaa;
+}
+
 .container {
 	display: flex;
 	flex-flow: row wrap;
@@ -16,8 +20,13 @@ html, body {
 	height: 30px;
 }
 
+.search p {
+	padding: 1vh 0;
+}
+
 .map-canvas {
 	height: 80%;
+	border: 2px solid #719c68;
 }
 
 .places {
@@ -25,15 +34,11 @@ html, body {
 }
 
 .places {
-		-webkit-column-width: 200px;
-		-moz-column-width: 200px;
-		-ms-column-width: 200px;
-		column-width: 200px;
-	}
-
-	.search {background-color: red;}
-	.map-canvas {background-color: green;}
-	.places {background-color: blue;}
+	-webkit-column-width: 200px;
+	-moz-column-width: 200px;
+	-ms-column-width: 200px;
+	column-width: 200px;
+}
 
 /* Landscape or large screens */
 @media (orientation: landscape) and (max-device-width: 600px), (min-width: 1000px) {
@@ -49,4 +54,38 @@ html, body {
 		order: 2;
 		height: 100%;
 	}
+	.search p {
+		margin-left: 210px;
+	}
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+li {
+	padding: 0.5vh 0.5vw;
+	font: 400 15px/1.5 Helvetica, Verdana, sans-serif;
+	border-bottom: 1px solid #92b592;
+}
+
+li:hover {
+	background-color:
+}
+
+input {
+	margin: 0 0.5vw;
+}
+
+h2, h3, h4 {
+	text-align: center;
+}
+
+.info {
+	margin: 0;
+	background-color: #rgba(193,65,65,0.44);
+	padding-left: 2vw;
+	font: 400 13px/1.5 Helvetica, Verdana, sans-serif;
 }

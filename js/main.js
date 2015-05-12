@@ -26,6 +26,8 @@ data.venueList = appStorage;
 data.image = "resources/music_marker.png";
 
 var view = {};
+view.bound = new google.maps.LatLngBounds();
+
 view.formatEvents = function(name, storedUrl, eventsArray) {
   var url, contentStr;
   if (eventsArray.length && eventsArray[0].Venue.Url) {
@@ -128,6 +130,7 @@ vm.Venue = function(place) {
     map: vm.map,
     visible: false
   });
+  view.bound.extend(this.marker.getPosition());
 
   this.infoWindow = new google.maps.InfoWindow({
     content: ""
@@ -199,7 +202,7 @@ vm.Venue.prototype.loadEvents = function() {
         this.events = JSON.parse(httpRequest.responseText).Events;
         this.eventsLoaded(true);
       } else {
-        alert('Sorry. There was a problem getting the data. Please try again later.');
+        alert('Sorry. There was a problem getting some data. Please try again later.');
       }
     }
   }.bind(this);
@@ -232,17 +235,22 @@ var initialize = function() {
   }
   vm.venues = ko.observableArray();
   var i = data.venueList.length - 1;
-  vm.venues.push(new vm.Venue(data.venueList[i]));
-  var timer = setInterval(function() {
-    i--;
+  try {
     vm.venues.push(new vm.Venue(data.venueList[i]));
-    if (i === 0) {
-      clearInterval(timer);
-      setTimeout(function() {
-        console.log(vm.venues());
-      }, 10000);
-    }
-
-  }, 2000);
+    var timer = setInterval(function() {
+      i--;
+      vm.venues.push(new vm.Venue(data.venueList[i]));
+      if (i === 0) {
+        clearInterval(timer);
+        setTimeout(function() {
+          vm.map.fitBounds(view.bound);
+          console.log(vm.venues());
+        }, 2000);
+      }
+    }, 2000);
+  } catch (e) {
+    alert("Sorry! There was a problem connecting with the Google map server. Please check " +
+      "your Internet connection or try again later.");
+  }
   ko.applyBindings(vm);
 };

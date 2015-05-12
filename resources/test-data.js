@@ -8,25 +8,6 @@ var appStorage = [
 "longitude": -75.2241
 },
 {
-"name": "Susquehanna Bank Center",
-"id": 3242,
-"url": "xxx",
-"address": "1 Harbour Blvd, Camden",
-"latitude": 39.94172,
-"longitude": -75.12793
-}
-];
-
-var other = [
-{
-"name": "World Cafe Live",
-"id": 69812,
-"url": "xxx",
-"address": "3025 Walnut Street",
-"latitude": 39.9518,
-"longitude": -75.1845
-},
-{
 "name": "Wells Fargo Center",
 "id": 259,
 "url": "xxx",
@@ -57,7 +38,10 @@ var other = [
 "address": "69th St & Ludlow",
 "latitude": 39.9612,
 "longitude": -75.2589
-},
+}
+]
+
+var other = [
 {
 "name": "Chris' Jazz Cafe",
 "id": 12440,
@@ -105,6 +89,22 @@ var other = [
 "address": "1003 Arch St",
 "latitude": 39.95355,
 "longitude": -75.156323
+},
+{
+"name": "World Cafe Live",
+"id": 69812,
+"url": "xxx",
+"address": "3025 Walnut Street",
+"latitude": 39.9518,
+"longitude": -75.1845
+},
+{
+"name": "Susquehanna Bank Center",
+"id": 3242,
+"url": "xxx",
+"address": "1 Harbour Blvd, Camden",
+"latitude": 39.94172,
+"longitude": -75.12793
 }
 ];
 

@@ -15,15 +15,17 @@
 </head>
 
 <body onload="initialize()">
+  <h2>Philly Music</h2>
   <div class="search">
 <p>Search for a venue<input data-bind="textInput: searchStr"/>
-  or tick this box<input type="checkbox" data-bind="checked: artistSearch"/>to search for an artist</p>
+  or tick this box<input type="checkbox" data-bind="checked: artistSearch"/>to search by artist</p>
   </div>
   <div class="container">
     <div class="map-canvas">
       <p>map</p>
     </div>
     <div class="places">
+      <h3>Venues</h3>
      <ul data-bind = "foreach: venues">
       <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
      </ul>
