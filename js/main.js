@@ -1,10 +1,14 @@
 var mapView = function() {
+  if (!google) {
+    alert("Sorry! There was a problem connecting with the Google map server. Please check " +
+      "your Internet connection or try again later.");
+    return false;
+  }
   var mapOptions = {
     zoom: 12,
     center: new google.maps.LatLng(39.9518, -75.1845),
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
-
   var map = new google.maps.Map(document.getElementsByClassName("map-canvas")[0], mapOptions);
   google.maps.event.addDomListener(window, "resize", function() {
     var center = map.getCenter();
@@ -22,19 +26,34 @@ data.venueList = appStorage;
 data.image = "resources/music_marker.png";
 
 var view = {};
-view.formatEvents = function(name, eventsArray) {
-  var contentStr = "<div class='info'><h3><a href='" + eventsArray[0].Venue.Url +
-    "' target='_blank'>" + name + "</a></h3>";
-  for (var i = 0; i < eventsArray.length; i++) {
-    contentStr += "<h4>" + view.formatDate(eventsArray[i].Date) + "</h4>";
-
-    for (var j = 0; j < eventsArray[i].Artists.length; j++) {
-      contentStr += "<p>" + eventsArray[i].Artists[j].Name + "</p>";
-    }
-    contentStr += "<a href='" + eventsArray[i].TicketUrl +
-      "' target='_blank'>Get ticket info</a>";
-    contentStr += "</div>";
+view.formatEvents = function(name, storedUrl, eventsArray) {
+  var url, contentStr;
+  if (eventsArray.length && eventsArray[0].Venue.Url) {
+    url = eventsArray[0].Venue.Url;
+  } else {
+    url = storedUrl;
   }
+  contentStr = "<div class='info'><h3><a href='" + url +
+    "' target='_blank'>" + name + "</a></h3>";
+  if (eventsArray.length === 0) {
+    contentStr += "<p>No concert data was available for this venue.</p>";
+  } else {
+    try {
+
+      for (var i = 0; i < eventsArray.length; i++) {
+        contentStr += "<h4>" + view.formatDate(eventsArray[i].Date) + "</h4>";
+
+        for (var j = 0; j < eventsArray[i].Artists.length; j++) {
+          contentStr += "<p>" + eventsArray[i].Artists[j].Name + "</p>";
+        }
+        contentStr += "<a href='" + eventsArray[i].TicketUrl +
+          "' target='_blank'>Get ticket info</a>";
+      }
+    } catch (e) {
+      contentStr += "<p>No concert data was available for this venue.</p>";
+    }
+  }
+  contentStr += "</div>";
   return contentStr;
 };
 
@@ -90,18 +109,18 @@ vm.artistSearch = ko.observable(false);
 
 vm.Venue = function(place) {
   this.id = place.id;
+  this.url = place.url;
   this.events = [];
   this.eventsLoaded = ko.observable(false);
   this.loadEvents();
-  //this.events = testEvents;
   this.eventsLoaded = ko.observable(false);
   this.name = place.name;
   this.address = place.address;
 
   this.marker = new google.maps.Marker({
     position: {
-      lat: place.Latitude,
-      lng: place.Longitude
+      lat: place.latitude,
+      lng: place.longitude
     },
     title: this.name,
     icon: data.image,
@@ -115,13 +134,7 @@ vm.Venue = function(place) {
   });
   this.contentFormatted = false;
 
-  google.maps.event.addListener(this.marker, 'click', function() {
-    if (!this.contentFormatted) {
-      this.infoWindow.setContent(view.formatEvents(this.name, this.events));
-      this.contentFormatted = true;
-    }
-    this.infoWindow.open(vm.map, this.marker);
-  }.bind(this));
+  google.maps.event.addListener(this.marker, 'click', this.showConcerts.bind(this));
 
   this.isVisible = ko.computed(function() {
     if (!this.eventsLoaded()) {
@@ -142,7 +155,6 @@ vm.Venue = function(place) {
     } else {
       for (i = this.events.length - 1; i >= 0; i--) {
         for (var j = this.events[i].Artists.length - 1; j >= 0; j--) {
-          var compare = this.events[i].Artists[j].Name.toLowerCase();
           if (this.events[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
             this.marker.setVisible(true);
             return true;
@@ -181,24 +193,29 @@ vm.Venue.prototype.loadEvents = function() {
     return false;
   }
   httpRequest.onreadystatechange = function() {
-    if (httpRequest.readyState === 2) {
-      console.log("request sent for ", this.name);
-    }
     if (httpRequest.readyState === 4) {
       if (httpRequest.status === 200) {
+        console.log(httpRequest.responseText)
         this.events = JSON.parse(httpRequest.responseText).Events;
-        console.log(this.events);
-        console.log(this);
         this.eventsLoaded(true);
       } else {
-        alert('There was a problem with the request.');
+        alert('Sorry. There was a problem getting the data. Please try again later.');
       }
     }
   }.bind(this);
   url = "http://api.jambase.com/events?venueId=" + this.id +
     "&page=0&api_key=73ntgrhffzwqdcaan4empnrd";
   httpRequest.open('GET', url);
+  httpRequest.setRequestHeader("Accept", "text/html,application/json");
   httpRequest.send();
+};
+
+vm.Venue.prototype.showConcerts = function() {
+  if (!this.contentFormatted) {
+    this.infoWindow.setContent(view.formatEvents(this.name, this.url, this.events));
+    this.contentFormatted = true;
+  }
+  this.infoWindow.open(vm.map, this.marker);
 };
 
 /* Triggered after DOM is loaded to draw map and apply ko bindings,
@@ -206,7 +223,13 @@ and to populate the venues array with venue objects. Each new object makes
 an API call to JamBase, which limits calls to 2 per second, so
 SetInterval is used to time this process. */
 var initialize = function() {
-  vm.map = mapView();
+  try {
+    vm.map = mapView();
+  } catch (e) {
+    alert("Sorry! There was a problem connecting with the Google map server. Please check " +
+      "your Internet connection or try again later.");
+    return false;
+  }
   vm.venues = ko.observableArray();
   var i = data.venueList.length - 1;
   vm.venues.push(new vm.Venue(data.venueList[i]));
@@ -215,8 +238,11 @@ var initialize = function() {
     vm.venues.push(new vm.Venue(data.venueList[i]));
     if (i === 0) {
       clearInterval(timer);
+      setTimeout(function() {
+        console.log(vm.venues());
+      }, 10000);
     }
 
-  }, 550);
+  }, 2000);
   ko.applyBindings(vm);
 };

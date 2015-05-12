@@ -25,7 +25,7 @@
     </div>
     <div class="places">
      <ul data-bind = "foreach: venues">
-      <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}"></li>
+      <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
      </ul>
    </div>
  </div>

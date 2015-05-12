@@ -2,96 +2,109 @@ var appStorage = [
 {
 "name": "Mann Music Center",
 "id": 45991,
+"url": "xxx",
 "address": "5201 Parkside Ave",
-"Latitude": 39.98149,
-"Longitude": -75.2241
+"latitude": 39.98149,
+"longitude": -75.2241
 },
 {
 "name": "Susquehanna Bank Center",
 "id": 3242,
+"url": "xxx",
 "address": "1 Harbour Blvd, Camden",
-"Latitude": 39.94172,
-"Longitude": -75.12793
-},
-{
-"name": "World Cafe Live",
-"id": 69812,
-"address": "3025 Walnut Street",
-"Latitude": 39.9518,
-"Longitude": -75.1845
-},
-{
-"name": "Wells Fargo Center",
-"id": 259,
-"address": "3601 S Broad St",
-"Latitude": 39.901171,
-"Longitude": -75.172633
-},
-{
-"name": "Lincoln Financial Field",
-"id": 3461,
-"address": "1 Lincoln Financial Field Way",
-"Latitude": 39.90073,
-"Longitude": -75.16754
+"latitude": 39.94172,
+"longitude": -75.12793
 }
 ];
 
 var other = [
 {
+"name": "World Cafe Live",
+"id": 69812,
+"url": "xxx",
+"address": "3025 Walnut Street",
+"latitude": 39.9518,
+"longitude": -75.1845
+},
+{
+"name": "Wells Fargo Center",
+"id": 259,
+"url": "xxx",
+"address": "3601 S Broad St",
+"latitude": 39.901171,
+"longitude": -75.172633
+},
+{
+"name": "Lincoln Financial Field",
+"id": 3461,
+"url": "xxx",
+"address": "1 Lincoln Financial Field Way",
+"latitude": 39.90073,
+"longitude": -75.16754
+},
+{
 "name": "Kimmel Center",
 "id": 16004,
+"url": "xxx",
 "address": "300 S Broad St",
-"Latitude": 39.946999,
-"Longitude": -75.164845
+"latitude": 39.946999,
+"longitude": -75.164845
 },
 {
 "name": "Tower Theater",
 "id": 270,
+"url": "xxx",
 "address": "69th St & Ludlow",
-"Latitude": 39.9612,
-"Longitude": -75.2589
+"latitude": 39.9612,
+"longitude": -75.2589
 },
 {
 "name": "Chris' Jazz Cafe",
 "id": 12440,
+"url": "xxx",
 "address": "1421 Sansom St",
-"Latitude": 39.950155,
-"Longitude": -75.1645
+"latitude": 39.950155,
+"longitude": -75.1645
 },
 {
 "name": "Academy of Music",
 "id": 219,
+"url": "xxx",
 "address": "Broad and Locust Sts",
-"Latitude": 39.948216,
-"Longitude": -75.164579
+"latitude": 39.948216,
+"longitude": -75.164579
 },
 {
 "name": "Electric Factory",
 "id": 3542,
+"url": "xxx",
 "address": "421 N 7th St",
-"Latitude": 39.958868,
-"Longitude": -75.150212
+"latitude": 39.958868,
+"longitude": -75.150212
 },
 {
 "name": "Theatre of Living Arts (TLA)",
 "id": 1000,
+"url": "xxx",
 "address": "334 South St",
-"Latitude": 39.941515,
-"Longitude": -75.148335
+"latitude": 39.941515,
+"longitude": -75.148335
 },
 {
 "name": "Union Transfer",
 "id": 122405,
+"url": "xxx",
 "address": "1026 Spring Garden St",
-"Latitude": 39.961552,
-"Longitude": -75.155319
+"latitude": 39.961552,
+"longitude": -75.155319
 },
 {
 "name": "Trocadero",
 "id": 1092,
+"url": "xxx",
 "address": "1003 Arch St",
-"Latitude": 39.95355,
-"Longitude": -75.156323
+"latitude": 39.95355,
+"longitude": -75.156323
 }
 ];
 
