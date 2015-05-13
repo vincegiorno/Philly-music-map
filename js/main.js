@@ -115,7 +115,6 @@ vm.Venue = function(place) {
   this.events = [];
   this.eventsLoaded = ko.observable(false);
   this.loadEvents();
-  this.eventsLoaded = ko.observable(false);
   this.name = place.name;
   this.address = place.address;
 
@@ -242,10 +241,7 @@ var initialize = function() {
       vm.venues.push(new vm.Venue(data.venueList[i]));
       if (i === 0) {
         clearInterval(timer);
-        setTimeout(function() {
-          vm.map.fitBounds(view.bound);
-          console.log(vm.venues());
-        }, 2000);
+        vm.map.fitBounds(view.bound);
       }
     }, 2000);
   } catch (e) {
