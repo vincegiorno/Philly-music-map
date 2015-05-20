@@ -1,5 +1,13 @@
 var appStorage = [
 {
+"name": "Wells Fargo Center",
+"id": 259,
+"url": "xxx",
+"address": "3601 S Broad St",
+"latitude": 39.901171,
+"longitude": -75.172633
+},
+{
 "name": "Mann Music Center",
 "id": 45991,
 "url": "xxx",
@@ -16,24 +24,16 @@ var appStorage = [
 "longitude": -75.12793
 },
 {
-"name": "Wells Fargo Center",
-"id": 259,
-"url": "xxx",
-"address": "3601 S Broad St",
-"latitude": 39.901171,
-"longitude": -75.172633
-}
-];
-
-var other = [
-{
 "name": "Chris' Jazz Cafe",
 "id": 12440,
 "url": "xxx",
 "address": "1421 Sansom St",
 "latitude": 39.950155,
 "longitude": -75.1645
-},
+}
+];
+
+var others =[
 {
 "name": "Lincoln Financial Field",
 "id": 3461,
@@ -43,28 +43,12 @@ var other = [
 "longitude": -75.16754
 },
 {
-"name": "Kimmel Center",
-"id": 16004,
-"url": "xxx",
-"address": "300 S Broad St",
-"latitude": 39.946999,
-"longitude": -75.164845
-},
-{
 "name": "Tower Theater",
 "id": 270,
 "url": "xxx",
 "address": "69th St & Ludlow",
 "latitude": 39.9612,
 "longitude": -75.2589
-},
-{
-"name": "Academy of Music",
-"id": 219,
-"url": "xxx",
-"address": "Broad and Locust Sts",
-"latitude": 39.948216,
-"longitude": -75.164579
 },
 {
 "name": "Electric Factory",
@@ -81,14 +65,6 @@ var other = [
 "address": "334 South St",
 "latitude": 39.941515,
 "longitude": -75.148335
-},
-{
-"name": "Union Transfer",
-"id": 122405,
-"url": "xxx",
-"address": "1026 Spring Garden St",
-"latitude": 39.961552,
-"longitude": -75.155319
 },
 {
 "name": "Trocadero",

@@ -17,20 +17,28 @@
 <body onload="initialize()">
   <h2>Philly Music</h2>
   <div class="search">
-<p>Search for a venue<input data-bind="textInput: searchStr"/>
-  or tick this box<input type="checkbox" data-bind="checked: artistSearch"/>to search by artist</p>
-  </div>
-  <div class="container">
-    <div class="map-canvas">
-      <p>map</p>
+    <p>Search for a venue<input data-bind="textInput: searchStr"/>
+      or tick this box<input type="checkbox" data-bind="checked: artistSearch"/>to search by artist</p>
     </div>
-    <div class="places">
-      <h3>Venues</h3>
-     <ul data-bind = "foreach: venues">
-      <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
-     </ul>
-   </div>
- </div>
-</body>
+    <div class="container">
+      <div class="map-canvas">
+        <p class="google-problem hidden">Sorry, but there was a problem connecting to Google. Please try again later.</p>
+      </div>
+      <div class="places">
+        <h3>Venues</h3>
+        <ul data-bind = "foreach: venues">
+          <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Concert information provided by:
+        <a href="http://www.JamBase.com" target="_top" title="JamBase Concert Search">
+          <img src= "http://images.jambase.com/logos/jambase140x70.gif" alt="Search JamBase Concerts" border="0" /></a>
+          Map icons from:
+          <a href="https://mapicons.mapsmarker.com/">Map Icons Collection</a>
+        </span>
+      </div>
+    </body>
 
-</html>
+    </html>
