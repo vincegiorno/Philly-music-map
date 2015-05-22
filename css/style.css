@@ -93,24 +93,18 @@ h2, h3, h4 {
 }
 
 .footer a {
-	margin: 0 2vw 0 1vw;
+	margin: 2vh 2vw 0 1vw;
 }
 
 .info {
-	margin: 0;
 	background-color: #cadfaa;
-	padding-left: 2vw;
+	padding: 0 2vw;
 	font: 400 13px/1.5 Helvetica, Verdana, sans-serif;
 }
 
-.info h4 {
+.date {
 	background-color: #f18ea0;
 	margin: 0;
-	padding: 2vh 2vw 1vh 2vw;
-}
-
-h3 + h4 {   /* keep venue address background same as for name */
-	background-color: #cadfaa;
 }
 
 .info p {

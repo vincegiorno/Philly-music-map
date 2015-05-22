@@ -31,14 +31,14 @@ view.formatEvents = function(name, storedUrl, address, eventsArray) {
   }
   contentStr = '<div class="info"><h3><a href="' + url +
     '" target="_blank">' + name + '</a></h3>';
-    contentStr += '<h4>' + address + '</h4>';
+  contentStr += '<h4>' + address + '</h4>';
   if (eventsArray.length === 0) {
     contentStr += '<p>No concert data was available for this venue.</p>';
   } else {
     try {
 
       for (var i = 0; i < eventsArray.length; i++) {
-        contentStr += '<h4>' + view.formatDate(eventsArray[i].Date) + '</h4>';
+        contentStr += '<h4 class="date">' + view.formatDate(eventsArray[i].Date) + '</h4>';
 
         for (var j = 0; j < eventsArray[i].Artists.length; j++) {
           contentStr += '<p>' + eventsArray[i].Artists[j].Name + '</p>';
@@ -191,16 +191,11 @@ vm.Venue.prototype.loadEvents = function() {
       } catch (e) {}
     }
   }
-  if (!httpRequest) {
-    alert('Data could not be requested from the server.');
-    return false;
-  }
   httpRequest.onreadystatechange = function() {
     if (httpRequest.readyState === 4) {
       if (httpRequest.status === 200) {
         this.events = httpRequest.responseText;
-        this.eventsLoaded(true);
-      } else {
+        this.parseEvents();
         this.eventsLoaded(true);
       }
     }
@@ -212,9 +207,12 @@ vm.Venue.prototype.loadEvents = function() {
   httpRequest.send();
 };
 
+vm.Venue.prototype.parseEvents = function() {
+  this.events = JSON.parse(this.events).Events;
+};
+
 vm.Venue.prototype.showConcerts = function() {
   if (!this.contentFormatted) {
-    this.events = JSON.parse(this.events).Events;
     this.infoWindow.setContent(view.formatEvents(this.name, this.url, this.address, this.events));
     this.contentFormatted = true;
   }
@@ -238,16 +236,17 @@ var initialize = function() {
     return false;
   }
   vm.venues = ko.observableArray();
-  var i = data.venueList.length - 1;
   try {
-    vm.venues.push(new vm.Venue(data.venueList[i]));
-    var timer = setInterval(function() {
-      i--;
-      vm.venues.push(new vm.Venue(data.venueList[i]));
-      if (i === 0) {
-        clearInterval(timer);
-      }
-    }, 1000);
+    var i = data.venueList.length;
+    if (i > 0) {
+      var timer = setInterval(function() {
+        i--;
+        vm.venues.push(new vm.Venue(data.venueList[i]));
+        if (i === 0) {
+          clearInterval(timer);
+        }
+      }, 1000);
+    }
   } catch (e) {
     var warning = new google.maps.InfoWindow({
       content: 'Sorry, but there was a problem setting up the app. Please try again later.',
