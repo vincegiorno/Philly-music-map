@@ -103,6 +103,8 @@ view.formatDate = function(dateStr) {
 var vm = {};
 vm.searchStr = ko.observable('');
 vm.artistSearch = ko.observable(false);
+vm.loaded = 0;
+vm.failed = 0;
 
 vm.Venue = function(place) {
   this.id = place.id;
@@ -197,6 +199,12 @@ vm.Venue.prototype.loadEvents = function() {
         this.events = httpRequest.responseText;
         this.parseEvents();
         this.eventsLoaded(true);
+        vm.loaded++;
+      } else {
+        vm.failed++;
+      }
+      if (vm.loaded + vm.failed == data.venueList.length) {
+        vm.afterLoad();
       }
     }
   }.bind(this);
@@ -223,6 +231,24 @@ vm.fitMap = function() {
   vm.map.fitBounds(view.bound);
 };
 
+vm.afterLoad = function() {
+  if (vm.loaded > 0) {
+    vm.fitMap();
+  }
+  if (vm.failed > 0) {
+    if (vm.failed > 2) {
+      vm.warning.setContent('Sorry, but information for many of the ' +
+        'venues could not be downloaded. Please try again later.');
+
+    } else {
+      vm.warning.setContent('Sorry, but information for some of the ' +
+        'venues could not be downloaded. If the venue you are looking ' +
+        'for does not appear, please try again later.');
+    }
+    vm.warning.open(vm.map);
+  }
+};
+
 /* Triggered after DOM is loaded to draw map and apply ko bindings,
 and to populate the venues array with venue objects. Each new object makes
 an API call to JamBase, which limits calls to 2 per second, so
@@ -235,6 +261,9 @@ var initialize = function() {
     document.getElementsByClassName('google-problem')[0].className = 'google-problem';
     return false;
   }
+  vm.warning = new google.maps.InfoWindow({
+    position: vm.map.getCenter()
+  });
   vm.venues = ko.observableArray();
   try {
     var i = data.venueList.length;
@@ -245,14 +274,11 @@ var initialize = function() {
         if (i === 0) {
           clearInterval(timer);
         }
-      }, 1000);
+      }, 1500);
     }
   } catch (e) {
-    var warning = new google.maps.InfoWindow({
-      content: 'Sorry, but there was a problem setting up the app. Please try again later.',
-      position: vm.map.getCenter()
-    });
-    warning.open(vm.map);
+    vm.warning.setContent('Sorry, but there was a problem oading the app. Please try again later.');
+    vm.warning.open(vm.map);
   }
   ko.applyBindings(vm);
 };

@@ -46,10 +46,7 @@ var appStorage = [
 "address": "334 South St",
 "latitude": 39.941515,
 "longitude": -75.148335
-}
-];
-
-var and = [
+},
 {
 "name": "World Cafe Live",
 "id": 69812,
