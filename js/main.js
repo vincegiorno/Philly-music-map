@@ -1,3 +1,4 @@
+// Set up the Google map. Error handling is done in the initialize function that calls mapView
 var mapView = function() {
   var mapOptions = {
     zoom: 12,
@@ -13,49 +14,66 @@ var mapView = function() {
   return map;
 };
 
+// *** The data model is minimal **************************************
+
 var data = {};
-/* The list of venues is being read from a file for now, but alternately could come from
-local storage or an API call, when preprocessing would be needed, so data.venuelist is
-more of a place saver for now */
+/* The list of venues is being read from a file for now, but alternately
+could come from local storage or an API call, when preprocessing would be needed */
 data.venueList = appStorage;
 data.image = 'resources/music_marker.png';
 
+
+// *** View functions format the API data for use in the infowindows **
+
 var view = {};
 
+/* JSON data retrieved from the API is parsed and stored in each venue's events property.
+This function formats the data as an HTML string to be used as the infowindow content string */
 view.formatEvents = function(name, storedUrl, address, eventsArray) {
   var url, contentStr;
+  // Grab URL from API data if it exists in case it has chenged from file data
   if (eventsArray.length && eventsArray[0].Venue.Url) {
     url = eventsArray[0].Venue.Url;
   } else {
     url = storedUrl;
   }
+  /* Begin building the content string with the venue name as a link to its webpage, and
+  its address, both of which can be obtained from file data so no need to catch errors */
   contentStr = '<div class="info"><h3><a href="' + url +
     '" target="_blank">' + name + '</a></h3>';
   contentStr += '<h4>' + address + '</h4>';
+  // If events property is empty, set message and skip processing loop
   if (eventsArray.length === 0) {
     contentStr += '<p>No concert data was available for this venue.</p>';
   } else {
+    // All remaining data will trigger errors if not well-formed, so use try-catch
     try {
-
+      // Each event should have only one date
       for (var i = 0; i < eventsArray.length; i++) {
         contentStr += '<h4 class="date">' + view.formatDate(eventsArray[i].Date) + '</h4>';
-
+        // Each event has an Artists array with one or more artists
         for (var j = 0; j < eventsArray[i].Artists.length; j++) {
           contentStr += '<p>' + eventsArray[i].Artists[j].Name + '</p>';
         }
+        // Ticket info provided as a hyperlink
         contentStr += '<p><a href="' + eventsArray[i].TicketUrl +
           '" target="_blank">Get ticket info</a></p>';
       }
+      // Default message for infowindow in case of error. Other venues can still go ahead.
     } catch (e) {
       contentStr += '<p>No concert data was available for this venue.</p>';
     }
   }
+  // Close HTML string
   contentStr += '</div>';
   return contentStr;
 };
 
+//Auxiliary function to format date in reader-friendly form. Errors will be caught in formatEvents
 view.formatDate = function(dateStr) {
+  // Extract just the date from the UTC timestamp
   var date = dateStr.substr(5, 5);
+  // The month is the first 2 digits. Parse as int for convenient use in switch block
   var month = parseInt(date.substr(0, 2));
   switch (month) {
     case 1:
@@ -97,8 +115,11 @@ view.formatDate = function(dateStr) {
     default:
       month = null;
   }
+  // Date is last 2 digits
   return month + ' ' + parseInt(date.substr(3, 2));
 };
+
+// *** View Model *****************************************************
 
 var vm = {};
 vm.searchStr = ko.observable('');
