@@ -274,7 +274,7 @@ var initialize = function() {
         if (i === 0) {
           clearInterval(timer);
         }
-      }, 1500);
+      }, 2000);
     }
   } catch (e) {
     vm.warning.setContent('Sorry, but there was a problem oading the app. Please try again later.');
