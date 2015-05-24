@@ -115,27 +115,34 @@ view.formatDate = function(dateStr) {
     default:
       month = null;
   }
-  // Date is last 2 digits
+  // Numerical date is last 2 digits
   return month + ' ' + parseInt(date.substr(3, 2));
 };
 
 // *** View Model *****************************************************
 
 var vm = {};
+/* 4 app variables are set here: searchStr, which holds the user-input search text;
+artistSearch, a boolean that determines whether the search is conducted on the venue or
+artist names; and loaded and failed which count successful and unsuccessful API calls */
 vm.searchStr = ko.observable('');
 vm.artistSearch = ko.observable(false);
 vm.loaded = 0;
 vm.failed = 0;
 
+/* Constructor for venue objects. Each object holds static file data (including API id),
+state variables and data fetched from the API for one of the venues. */
 vm.Venue = function(place) {
   this.id = place.id;
   this.url = place.url;
-  this.events = [];
-  this.eventsLoaded = ko.observable(false);
-  this.loadEvents();
   this.name = place.name;
   this.address = place.address;
-
+  this.events = [];
+  this.eventsLoaded = ko.observable(false); // Set to true after successful API call
+  this.loadEvents(); // Makes the API call to load concert data for the venue
+  /* Markers are created using file geo data. The visible property is initially set to false
+  and then set to true after a successful API call */
+  this.contentFormatted = false; // Set to true after events data is properly formatted
   this.marker = new google.maps.Marker({
     position: {
       lat: place.latitude,
@@ -147,36 +154,41 @@ vm.Venue = function(place) {
     map: vm.map,
     visible: false
   });
+  // Map boundaries are reset to ensure the marker will be in view when it is visible
   view.bound.extend(this.marker.getPosition());
-
+  // Infowindow created but content can be set only after API call
   this.infoWindow = new google.maps.InfoWindow({
     content: ''
   });
-  this.contentFormatted = false;
-
+  // Set Infowindow to open on marker click
   google.maps.event.addListener(this.marker, 'click', this.showConcerts.bind(this));
+  /* Opening Infowindow changes map boundaries, so reset when window closes. This must be
+  done by function reference, since a function call will be executed immediately */
   google.maps.event.addListener(this.infoWindow, 'closeclick', vm.fitMap);
 
+  // Several factors determine whether or not a venue is listed and its marker is visible
   this.isVisible = ko.computed(function() {
+    // Events data has not been received from the API, so hide venue
     if (!this.eventsLoaded()) {
       return false;
     }
-    // Return true if a venue name, event date or artist name contains the search string
+    // All venues/markers show if data is loaded and search string is empty
     if (vm.searchStr() === '') {
       this.marker.setVisible(true);
       return true;
     }
-
+    // If artist search not checked, show venues whose name contains search string
     var i;
     if (!vm.artistSearch()) {
       if (this.name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
         this.marker.setVisible(true);
         return true;
       }
-    } else {
+    } else { // artist search is checked
       // If events array is empty, skip processing; visible will be set to false by default.
       if (this.events !== []) {
-        // Loop through the Arists array for each event
+        /* Loop through the Arists array for each event. Exit function and show venue
+        on first artist's name that contains search string */
         for (i = this.events.length - 1; i >= 0; i--) {
           for (var j = this.events[i].Artists.length - 1; j >= 0; j--) {
             if (this.events[i].Artists[j].Name.toLowerCase().indexOf(vm.searchStr().toLowerCase()) >= 0) {
@@ -187,14 +199,15 @@ vm.Venue = function(place) {
         }
       }
     }
-    // Default if no match is found
+    // If no match is found, do not list venue or show marker
     this.marker.setVisible(false);
     return false;
   }.bind(this));
 };
 
+/* Turn animation on or off. No need to bind context, since the call is set up
+inside a ko foreach on an observable array */
 vm.Venue.prototype.toggleMarker = function() {
-
   if (this.marker.getAnimation() !== null) {
     this.marker.setAnimation(null);
   } else {
@@ -202,45 +215,58 @@ vm.Venue.prototype.toggleMarker = function() {
   }
 };
 
+// Make and process API calls
 vm.Venue.prototype.loadEvents = function() {
+  // Mozilla code for browser compatability
   if (window.XMLHttpRequest) { // Mozilla, Safari, ...
     httpRequest = new XMLHttpRequest();
   } else if (window.ActiveXObject) { // IE
     try {
       httpRequest = new ActiveXObject('Msxml2.XMLHTTP');
     } catch (e) {
-      try {
+      try { // Legacy IE
         httpRequest = new ActiveXObject('Microsoft.XMLHTTP');
       } catch (e) {}
     }
   }
+  // Set up AJAX callback handler
   httpRequest.onreadystatechange = function() {
     if (httpRequest.readyState === 4) {
       if (httpRequest.status === 200) {
+        /* Store raw JSON data, because atttempts to parse before storing
+        cause some API calls to fail silently */
         this.events = httpRequest.responseText;
+        // So let parsing be done via a call to a prototype method
         this.parseEvents();
-        this.eventsLoaded(true);
+        // Count successes and failures
         vm.loaded++;
       } else {
         vm.failed++;
       }
+      // Call afterLoad method after all API calls have resolved
       if (vm.loaded + vm.failed == data.venueList.length) {
         vm.afterLoad();
       }
     }
-  }.bind(this);
+  }.bind(this); // Bind callback to instance making the AJAX call
+  // Set up AJAX call
   url = 'http://api.jambase.com/events?venueId=' + this.id +
     '&page=0&api_key=73ntgrhffzwqdcaan4empnrd';
   httpRequest.open('GET', url);
+  // Firefox by default requests XML response, so ensure JSON request
   httpRequest.setRequestHeader('Accept', 'text/html,application/json');
   httpRequest.send();
 };
 
+// Parse returned JSON data so it can be used; set eventsLoaded to show venue & marker
 vm.Venue.prototype.parseEvents = function() {
   this.events = JSON.parse(this.events).Events;
+  this.eventsLoaded(true);
 };
 
+// Callback when Infowindow is opened
 vm.Venue.prototype.showConcerts = function() {
+  // Format & set Infowindow content the first time it is loaded
   if (!this.contentFormatted) {
     this.infoWindow.setContent(view.formatEvents(this.name, this.url, this.address, this.events));
     this.contentFormatted = true;
@@ -248,19 +274,23 @@ vm.Venue.prototype.showConcerts = function() {
   this.infoWindow.open(vm.map, this.marker);
 };
 
+// Resize/reorient map so all markers are in view area
 vm.fitMap = function() {
   vm.map.fitBounds(view.bound);
 };
 
+// Actions performed depending on success/failure of API calls
 vm.afterLoad = function() {
+  // Only call fitMap if at least one call succeeded or bounds object will be null
   if (vm.loaded > 0) {
     vm.fitMap();
   }
+  /* A warning for failed API calls differs for up to or more than 2 failures. The
+  Infowindow the warning uses is initialized in the Initialize function. */
   if (vm.failed > 0) {
     if (vm.failed > 2) {
       vm.warning.setContent('Sorry, but information for many of the ' +
         'venues could not be downloaded. Please try again later.');
-
     } else {
       vm.warning.setContent('Sorry, but information for some of the ' +
         'venues could not be downloaded. If the venue you are looking ' +
@@ -276,30 +306,42 @@ an API call to JamBase, which limits calls to 2 per second, so
 SetInterval is used to time this process. */
 var initialize = function() {
   try {
+    // Initialize the map
     vm.map = mapView();
+    // Initialize the bounds object after the map has been created
     view.bound = new google.maps.LatLngBounds();
   } catch (e) {
+    /* If there is a map error, remove the 'hidden' class on the error message in the
+    map div. It will be visible since no map is covering it. */
     document.getElementsByClassName('google-problem')[0].className = 'google-problem';
     return false;
   }
+  // Initialize the warning Infowindow only after the map has been successfully created.
   vm.warning = new google.maps.InfoWindow({
     position: vm.map.getCenter()
   });
+  // Set up the observable array that holds the Venue objects
   vm.venues = ko.observableArray();
+  var i = data.venueList.length;
   try {
-    var i = data.venueList.length;
+    // Functionality allowing a user to add or delete venues could produce a null list
     if (i > 0) {
+      /* Creating the first venue object outside the setInterval function was causing a
+      malfunction, so I moved it inside, which adds an additional delay but works */
       var timer = setInterval(function() {
         i--;
+        // A venue object is created for each venue in the data file and added to the array
         vm.venues.push(new vm.Venue(data.venueList[i]));
+        // Cancel the setInterval function after the last venue is created
         if (i === 0) {
           clearInterval(timer);
         }
       }, 2000);
     }
-  } catch (e) {
-    vm.warning.setContent('Sorry, but there was a problem oading the app. Please try again later.');
+  } catch (e) { // API calls produced errors.
+    vm.warning.setContent('Sorry, but there was a problem loading the app. Please try again later.');
     vm.warning.open(vm.map);
   }
+  // ko bindings applied here since initialize() is called only after the DOM is loaded
   ko.applyBindings(vm);
 };
