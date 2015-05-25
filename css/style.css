@@ -6,6 +6,9 @@ body {
 	background-color: #cadfaa;
 }
 
+/* Set up flex container for responsive behavior. The venues list will
+appear underneath the map on small screens in portrait orientation, the
+default layout, but to the left of the map on large screens or in landscape orientation. */
 .container {
 	display: flex;
 	flex-flow: row wrap;
@@ -20,6 +23,7 @@ body {
 	height: 30px;
 }
 
+/* vh and vw units are used for scaling. */
 .search p {
 	padding: 1vh 0;
 }
@@ -54,6 +58,7 @@ body {
 		order: 2;
 		height: 100%;
 	}
+	/* Move search bar to right to align with edge of map */
 	.search p {
 		margin-left: 210px;
 	}
@@ -71,10 +76,12 @@ li {
 	border-bottom: 1px solid #92b592;
 }
 
+/* Darken color when cursor is over a name in the venues list. */
 li:hover {
 	background-color: #719c68;
 }
 
+/* Add space between seach bar text and input areas. */
 input {
 	margin: 0 0.5vw;
 }
@@ -83,19 +90,23 @@ h2, h3, h4 {
 	text-align: center;
 }
 
+/* Place warning text for map loading errors. */
 .map-canvas p {
 	margin-top: 5vh;
 	text-align: center;
 }
 
+/* Keep warning text from flashing during load. */
 .hidden {
 	display: none;
 }
 
+/* Put space between attribution images and map */
 .footer img {
 	margin: 2vh 1vw 0 1vw;
 }
 
+/* Infowindow styling */
 .info {
 	background-color: #cadfaa;
 	padding: 0 2vw;
