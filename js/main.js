@@ -127,8 +127,7 @@ artistSearch, a boolean that determines whether the search is conducted on the v
 artist names; and loaded and failed which count successful and unsuccessful API calls */
 vm.searchStr = ko.observable('');
 vm.artistSearch = ko.observable(false);
-vm.loaded = 0;
-vm.failed = 0;
+vm.count = 0;
 
 /* Constructor for venue objects. Each object holds static file data (including API id),
 state variables and data fetched from the API for one of the venues. */
@@ -138,7 +137,7 @@ vm.Venue = function(place) {
   this.name = place.name;
   this.address = place.address;
   this.events = [];
-  this.eventsLoaded = ko.observable(false); // Set to true after successful API call
+  this.eventsLoaded = ko.observable(false); // Flag for success loading API data
   this.loadEvents(); // Makes the API call to load concert data for the venue
   /* Markers are created using file geo data. The visible property is initially set to false
   and then set to true after a successful API call */
@@ -232,21 +231,21 @@ vm.Venue.prototype.loadEvents = function() {
   // Set up AJAX callback handler
   httpRequest.onreadystatechange = function() {
     if (httpRequest.readyState === 4) {
+      vm.count++;
       if (httpRequest.status === 200) {
         /* Store raw JSON data, because atttempts to parse before storing
         cause some API calls to fail silently */
         this.events = httpRequest.responseText;
         // So let parsing be done via a call to a prototype method
         this.parseEvents();
-        // Count successes and failures
-        vm.loaded++;
-      } else {
-        vm.failed++;
       }
-      // Call afterLoad method after all API calls have resolved
-      if (vm.loaded + vm.failed == data.venueList.length) {
+    }
+    /* Call afterLoad method after all API calls have resolved,
+    giving an extra second to ensure parsing is completed */
+    if (vm.count === vm.venues.length) {
+      setTimeout(function() {
         vm.afterLoad();
-      }
+      }, 1000);
     }
   }.bind(this); // Bind callback to instance making the AJAX call
   // Set up AJAX call
@@ -285,10 +284,21 @@ vm.afterLoad = function() {
   if (vm.loaded > 0) {
     vm.fitMap();
   }
+  /* All AJAX calls have resolved, so any venue that still has
+  eventsLoaded set to false is counted as a silent fail. */
+  var complete = 0;
+  for (var i = vm.venues.length - 1; i >= 0; i--) {
+    if (vm.venues[i].eventsLoaded() === true) {
+      complete++;
+    }
+  }
+  /* Checking against the number of venues in the data file will ensure
+  that no venue objects have silently failed */
+  var failed = data.venueList.length - complete;
   /* A warning for failed API calls differs for up to or more than 2 failures. The
   Infowindow the warning uses is initialized in the Initialize function. */
-  if (vm.failed > 0) {
-    if (vm.failed > 2) {
+  if (failed > 0) {
+    if (failed > 2) {
       vm.warning.setContent('Sorry, but information for many of the ' +
         'venues could not be downloaded. Please try again later.');
     } else {
@@ -328,13 +338,13 @@ var initialize = function() {
     if (i > 0) {
       /* Creating the first venue object outside the setInterval function was causing a
       malfunction, so I moved it inside, which adds an additional delay but works */
-      var timer = setInterval(function() {
+      var venuesTimer = setInterval(function() {
         i--;
         // A venue object is created for each venue in the data file and added to the array
         vm.venues.push(new vm.Venue(data.venueList[i]));
-        // Cancel the setInterval function after the last venue is created
+        // Cancel the venues setInterval function after the last venue is created
         if (i === 0) {
-          clearInterval(timer);
+          clearInterval(venuesTimer);
         }
       }, 2000);
     }
