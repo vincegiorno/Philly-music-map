@@ -342,6 +342,6 @@ var initialize = function() {
     vm.warning.setContent('Sorry, but there was a problem loading the app. Please try again later.');
     vm.warning.open(vm.map);
   }
-  // ko bindings applied here since initialize() is called only after the DOM is loaded
+  // Bindings must be applied after the DOM is loaded, and initialize() is the onLoad callback.
   ko.applyBindings(vm);
 };
