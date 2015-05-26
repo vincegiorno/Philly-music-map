@@ -1,0 +1,27 @@
+{
+  "name": "philly-music-map",
+  "version": "1.0.0",
+  "description": "Clickable map of Philadelphia music venues that shows upcoming concerts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vincegiorno/Philly-music-map.git"
+  },
+  "author": "Vince Giorno",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vincegiorno/Philly-music-map/issues"
+  },
+  "homepage": "https://github.com/vincegiorno/Philly-music-map",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-imagemin": "^2.2.1",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-minify-css": "^1.1.1",
+    "gulp-minify-html": "^1.0.2",
+    "gulp-uglify": "^1.2.0"
+  }
+}
