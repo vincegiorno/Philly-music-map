@@ -239,13 +239,16 @@ vm.Venue.prototype.loadEvents = function() {
         // So let parsing be done via a call to a prototype method
         this.parseEvents();
       }
-    }
-    /* Call afterLoad method after all API calls have resolved,
-    giving an extra second to ensure parsing is completed */
-    if (vm.count === vm.venues.length) {
-      setTimeout(function() {
-        vm.afterLoad();
-      }, 1000);
+      /* Call afterLoad method after all API calls have resolved,
+      giving an extra second to ensure parsing is completed. venueList is used
+      because venues is cganging size as calls are being made and responses received.
+      Since the AJAX calls are made as the venue objects are created, any errors
+      in placing the calls should be caught in the initialize tr/catch block. */
+      if (vm.count === data.venueList.length) {
+        setTimeout(function() {
+          vm.afterLoad();
+        }, 1000);
+      }
     }
   }.bind(this); // Bind callback to instance making the AJAX call
   // Set up AJAX call
@@ -280,15 +283,16 @@ vm.fitMap = function() {
 
 // Actions performed depending on success/failure of API calls
 vm.afterLoad = function() {
-  // Only call fitMap if at least one call succeeded or bounds object will be null
-  if (vm.loaded > 0) {
+  /* Only call fitMap if at least one call succeeded, or no markers will be
+  visible and bounds object could be null. */
+  if (vm.count > 0) {
     vm.fitMap();
   }
   /* All AJAX calls have resolved, so any venue that still has
   eventsLoaded set to false is counted as a silent fail. */
   var complete = 0;
-  for (var i = vm.venues.length - 1; i >= 0; i--) {
-    if (vm.venues[i].eventsLoaded() === true) {
+  for (var i = vm.venues().length - 1; i >= 0; i--) {
+    if (vm.venues()[i].eventsLoaded()) {
       complete++;
     }
   }
@@ -303,7 +307,7 @@ vm.afterLoad = function() {
         'venues could not be downloaded. Please try again later.');
     } else {
       vm.warning.setContent('Sorry, but information for some of the ' +
-        'venues could not be downloaded. If the venue you are looking ' +
+        'venues could not be downloaded. If the information you are looking ' +
         'for does not appear, please try again later.');
     }
     vm.warning.open(vm.map);
