@@ -5,12 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Philly music map</title>
-  <script type="text/javascript"
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhBc9dvua-NxInzFPtTZw3bKQdHrfxrU8">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhBc9dvua-NxInzFPtTZw3bKQdHrfxrU8">
   </script>
-  <script type="text/javascript" src="js/knockout-3.3.0.js"></script>
-  <script type="text/javascript" src="resources/test-data.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
+  <script src="js/knockout-3.3.0.js"></script>
+  <script src="resources/test-data.js"></script>
+  <script src="js/main.js"></script>
   <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -19,28 +18,29 @@
   <div class="search">
     <p>Search for a venue<input data-bind="textInput: searchStr"/>
       or tick this box<input type="checkbox" data-bind="checked: artistSearch"/>to search by artist</p>
-    </div>
-    <div class="container">
-      <div class="places">
-        <h3>Venues</h3>
+  </div>
+  <div class="container">
+    <div class="places">
+      <h3>Venues</h3>
         <!-- The list items are the name properties of the venue objects in the venues observable array. Visibility is contrlled by each object's observable isVisible property. The corresponding map marker's bounce animation will be active while the cursor hovers over the name in the list. -->
-        <ul data-bind = "foreach: venues">
-          <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
-        </ul>
-      </div>
-      <div class="map-canvas">
-        <!-- The hidden class will be removed & the text will show if the map does not initialize -->
-        <p class="google-problem hidden">Sorry, but there was a problem connecting to Google. Please try again later.</p>
-      </div>
+      <ul data-bind = "foreach: venues">
+        <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
+      </ul>
     </div>
-    <div class="footer"> <!-- Attribution for external resources -->
-      <span>Concert information provided by:
-        <a href="http://www.JamBase.com" target="_blank" title="JamBase Concert Search">
-          <img src= "resources/jambase140x70.gif" alt="Search JamBase Concerts" border="0" /></a>
-          Map icons from:
-          <a href="https://mapicons.mapsmarker.com/" target="_blank">Map Icons Collection</a>
-        </span>
-      </div>
-    </body>
+    <div class="map-canvas">
+        <!-- The hidden class will be removed & the text will show if the map does not initialize -->
+      <p class="google-problem hidden">Sorry, but there was a problem connecting to Google. Please try again later.</p>
+    </div>
+  </div>
+  <div class="footer"> <!-- Attribution for external resources -->
+    <span>Concert information provided by:
+      <a href="http://www.JamBase.com" target="_blank" title="JamBase Concert Search">
+        <img src= "resources/jambase140x70.gif" alt="Search JamBase Concerts" border="0" />
+      </a>
+      Map icons from:
+      <a href="https://mapicons.mapsmarker.com/" target="_blank">Map Icons Collection</a>
+    </span>
+  </div>
+</body>
 
-    </html>
+</html>
