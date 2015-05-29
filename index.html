@@ -21,16 +21,16 @@
       or tick this box<input type="checkbox" data-bind="checked: artistSearch"/>to search by artist</p>
     </div>
     <div class="container">
-      <div class="map-canvas">
-        <!-- The hidden class will be removed & the text will show if the map does not initialize -->
-        <p class="google-problem hidden">Sorry, but there was a problem connecting to Google. Please try again later.</p>
-      </div>
       <div class="places">
         <h3>Venues</h3>
         <!-- The list items are the name properties of the venue objects in the venues observable array. Visibility is contrlled by each object's observable isVisible property. The corresponding map marker's bounce animation will be active while the cursor hovers over the name in the list. -->
         <ul data-bind = "foreach: venues">
           <li data-bind = "visible: isVisible, text: name, event: {mouseover: toggleMarker, mouseout: toggleMarker}, click: showConcerts"></li>
         </ul>
+      </div>
+      <div class="map-canvas">
+        <!-- The hidden class will be removed & the text will show if the map does not initialize -->
+        <p class="google-problem hidden">Sorry, but there was a problem connecting to Google. Please try again later.</p>
       </div>
     </div>
     <div class="footer"> <!-- Attribution for external resources -->
